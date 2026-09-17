@@ -120,8 +120,7 @@ body {
     確認: 自分が見せたい画面になっている。
    ------------------------------------------------------------ */
 #timer{
-   font-size :64
-px;
+   font-size :64px;
    font-weight :bold;
    border-radius :6px;
 }
