@@ -35,6 +35,20 @@
     確認: 背景が暗くなり、文字が白く、中央に寄る。
           色は好きに変えてよい。
    ------------------------------------------------------------ */
+body {
+          background: #1a1a1a;
+          color: #f0f0f0;
+          font-family: sans-serif;
+          text-align: center;
+        }
+
+        #board{
+    width :300px;
+    height :400px;
+    background : #ffaa2b;
+    border :2px solid #666;
+    margin :20px auto;
+}
 
 
 
@@ -57,7 +71,12 @@
     確認: 盤が中央に表示される。
    ------------------------------------------------------------ */
 
-
+#ball{
+    width :20px;
+    height :20px;
+    background :#ffffff;
+    border-radius: 50%;
+}
 
 
 /* ------------------------------------------------------------
@@ -97,6 +116,25 @@
 
     確認: 自分が見せたい画面になっている。
    ------------------------------------------------------------ */
+#timer{
+   font-size :32px;
+   font-weight :bold;
+   border-radius :6px;
+}
+
+#startBtn{
+    cursor :pointer;
+    opacity :0.6;
+    background :#ccd606;
+    border-radius :6px;
+    border :none;
+}
+
+
+
+
+
+
 
 
 
