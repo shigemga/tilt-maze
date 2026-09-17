@@ -49,6 +49,9 @@ body {
     border :2px solid #666;
     margin :20px auto;
 }
+#message {
+    color: #2bbfff
+}
 
 
 
@@ -117,7 +120,8 @@ body {
     確認: 自分が見せたい画面になっている。
    ------------------------------------------------------------ */
 #timer{
-   font-size :32px;
+   font-size :64
+px;
    font-weight :bold;
    border-radius :6px;
 }
@@ -128,6 +132,7 @@ body {
     background :#ccd606;
     border-radius :6px;
     border :none;
+    font-size :64px
 }
 
 

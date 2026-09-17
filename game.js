@@ -57,6 +57,27 @@
 //      let ball = { x: 150, y: 200, vx: 0, vy: 0 };
 
 
+let ball = { x: 30, y: 20, vx: 0, vy: 0 };
+let goal = { x: 270, y: 370, r: 15 };
+let cleared = false;
+let startTime = Date.now();
+let walls = [
+ { x: 50,  y: 70,  w: 250, h: 16 }, // 上の方の壁（左側に隙間）
+  { x: 0,   y: 140, w: 230, h: 16 }, // 2段目の壁（右側に隙間）
+  { x: 70,  y: 210, w: 230, h: 16 }, // 3段目の壁（左側に隙間）
+  { x: 0,   y: 280, w: 240, h: 16 }, // 4段目の壁（右側に隙間）
+  {x: 0, y:35, w:250, h:8},
+  {x:210, y:330, w:150, h:10},
+
+  // 行き止まりや迷い道を作る縦の壁
+  { x: 140, y: 70,   w: 16,  h: 50 },  // スタート直後の分岐
+  { x: 210, y: 190, w: 16,  h: 30 },  // 罠の壁
+  { x: 70,  y: 250, w: 16,  h: 40 },  // 行き止まりブロック
+  { x: 150, y: 280, w: 16,  h: 50 },
+    { x: 210, y: 340, w: 10,  h: 25 },
+    {x:30, y:360, w:190, h:10},
+    { x: 100, y: 340, w: 16,  h: 30 },
+]
 
 
 
@@ -72,7 +93,147 @@
 //
 //  確認: 画面中央に玉が表示される。まだ動かない。
 
+function hitWall() {
+for (let i = 0; i < walls.length; i++) {
+    let w = walls[i];
+    if (ball.x > w.x && ball.x < w.x + w.w &&
+     ball.y > w.y && ball.y < w.y + w.h) {
+    return true;
+    }
+    }
+    return false;
+    }
 
+
+function update() {
+   ball.vx = ball.vx + tilt.x * 0.1;
+   ball.vy = ball.vy + tilt.y * 0.1;
+
+
+   
+for (let i = 0; i < walls.length; i++) {
+drawWall(walls[i].x, walls[i].y, walls[i].w, walls[i].h);
+}
+
+let prevX = ball.x;
+ball.x = ball.x + ball.vx;
+if (hitWall()) {
+    ball.x = prevX;
+    ball.vx = -ball.vx * 0.5;
+}
+
+let prevY = ball.y;
+ball.y = ball.y + ball.vy;
+if(hitWall()){
+    ball.y = prevY;
+    ball.vy= -ball.vy*0.5
+} 
+
+
+drawGoal(goal.x, goal.y, goal.r);
+if(cleared == false){
+    drawBall(ball.x, ball.y);
+}
+   
+   if (ball.x<0){
+    ball.x=0;
+     ball.vx=-ball.vx*0.5;
+}
+
+if(ball.y<0){
+    ball.y=0;
+    ball.vy=-ball.vy*0.5;
+}
+if(ball.x>300){
+    ball.x=300;
+     ball.vx=-ball.vx*0.7;
+}
+if(ball.y>400){
+    ball.y=400;
+     ball.vy=-ball.vy*0.7;
+}
+ball.vx=ball.vx*0.99
+ball.vy=ball.vy*0.99
+
+// --- ここから追加：花火を描画する処理 ---
+let fwCanvas = document.getElementById("fireworks");
+let fwCtx = fwCanvas ? fwCanvas.getContext("2d") : null;
+let particles = [];
+let isFireworksRunning = false;
+
+function startFireworks() {
+    if (!fwCanvas) return;
+    fwCanvas.width = window.innerWidth;
+    fwCanvas.height = window.innerHeight;
+    isFireworksRunning = true;
+
+    for (let i = 0; i < 100; i++) {
+        let angle = Math.random() * Math.PI * 2;
+        let speed = Math.random() * 6 + 2;
+        particles.push({
+            x: fwCanvas.width / 2,
+            y: fwCanvas.height / 2,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            alpha: 1,
+            color: `hsl(${Math.random() * 360}, 100%, 50%)`
+        });
+    }
+    animateFireworks();
+}
+
+function animateFireworks() {
+    if (!isFireworksRunning || !fwCtx) return;
+    fwCtx.clearRect(0, 0, fwCanvas.width, fwCanvas.height);
+
+    for (let i = particles.length - 1; i >= 0; i--) {
+        let p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.1;
+        p.alpha -= 0.02;
+
+        if (p.alpha <= 0) {
+            particles.splice(i, 1);
+            continue;
+        }
+
+        fwCtx.save();
+        fwCtx.globalAlpha = p.alpha;
+        fwCtx.fillStyle = p.color;
+        fwCtx.beginPath();
+        fwCtx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+        fwCtx.fill();
+        fwCtx.restore();
+    }
+
+    if (particles.length > 0) {
+        requestAnimationFrame(animateFireworks);
+    } else {
+        isFireworksRunning = false;
+    }
+}
+
+
+
+
+// 既存のゴール判定の部分を、次のように書き換えます
+let dx = ball.x - goal.x;
+let dy = ball.y - goal.y;
+let dist = Math.sqrt(dx * dx + dy * dy);
+if (dist < goal.r && !cleared) {
+    cleared = true;
+    document.getElementById("message").textContent = "CLEAR";
+    
+    // 🌟 花火をスタート
+    startFireworks();
+}
+
+
+
+
+
+}
 
 
 
